@@ -12,24 +12,24 @@ protocol Requestable {
     func urlRequest() -> URLRequest
 }
 
-struct APIRequest: Requestable {
+public struct APIRequest: Requestable {
     let path: String
     let method: String
     let root: String
     var queryItems = [URLQueryItem]()
 
-    init(root: String, path: String, method: String = "GET") {
+    public init(root: String, path: String, method: String = "GET") {
         self.path = path
         self.root = root
         self.method = method
     }
 
-    mutating func addingQueryItem(name: String, value: String) {
+    public mutating func addingQueryItem(name: String, value: String) {
         queryItems.append(URLQueryItem(name: name, value: value))
     }
 
     //TODO: Refactor Looks painful, but safe?
-    func urlRequest() -> URLRequest {
+    public func urlRequest() -> URLRequest {
         guard var components = URLComponents(string: root) else {
             return URLRequest(url: URL(fileURLWithPath: ""))
         }

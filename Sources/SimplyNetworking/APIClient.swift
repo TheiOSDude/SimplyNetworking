@@ -10,7 +10,7 @@ import Foundation
 
 struct APIClient: APIClientProtocol {
 
-    func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void) {
+    public func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void) {
 
         let task = URLSession.shared.dataTask(with: request) { data, _, error in
             let result: Result<T, NetworkLoaderError>
