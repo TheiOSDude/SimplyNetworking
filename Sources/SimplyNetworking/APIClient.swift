@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct APIClient: APIClientProtocol {
+public struct SNClient: APIClientProtocol {
 
     public func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void) {
 

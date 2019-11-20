@@ -8,11 +8,11 @@
 
 import Foundation
 
-struct NetworkLoaderError: Error, Codable {
+public struct NetworkLoaderError: Error, Codable {
     let message: String
 }
 
-protocol APIClientProtocol {
+public protocol APIClientProtocol {
     func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void)
 
 }
