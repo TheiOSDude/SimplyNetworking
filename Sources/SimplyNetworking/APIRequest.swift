@@ -47,5 +47,5 @@ public struct APIRequest: Requestable {
 }
 
 extension URLRequest: Requestable {
-    func urlRequest() -> URLRequest { return self }
+    public func urlRequest() -> URLRequest { return self }
 }
