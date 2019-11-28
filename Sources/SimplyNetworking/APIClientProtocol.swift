@@ -14,5 +14,4 @@ public struct NetworkLoaderError: Error, Codable {
 
 public protocol APIClientProtocol {
     func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void)
-
 }

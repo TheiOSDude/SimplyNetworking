@@ -8,8 +8,12 @@
 
 import Foundation
 
+enum APIRequestError: LocalizedError {
+    case badURL
+}
+
 protocol Requestable {
-    func urlRequest() -> URLRequest
+    func urlRequest() throws -> URLRequest
 }
 
 public struct APIRequest: Requestable {
@@ -29,15 +33,15 @@ public struct APIRequest: Requestable {
     }
 
     //TODO: Refactor Looks painful, but safe?
-    public func urlRequest() -> URLRequest {
+    public func urlRequest() throws -> URLRequest  {
         guard var components = URLComponents(string: root) else {
-            return URLRequest(url: URL(fileURLWithPath: ""))
+            throw APIRequestError.badURL
         }
 
         components.queryItems = queryItems
 
         guard let url = components.url else {
-            return URLRequest(url: URL(fileURLWithPath: ""))
+            throw APIRequestError.badURL
         }
 
         var request = URLRequest(url: url.appendingPathComponent(path))
@@ -48,4 +52,14 @@ public struct APIRequest: Requestable {
 
 extension URLRequest: Requestable {
     public func urlRequest() -> URLRequest { return self }
+}
+
+extension APIRequestError {
+    
+    var localizedDescription: String {
+        switch self {
+        case .badURL:
+            return "URL is badly constructed."
+        }
+    }
 }
