@@ -1,5 +1,5 @@
 //
-//  APIClient.swift
+//  APIClientProtocol.swift
 //  Simply Networking
 //
 //  Created by Lee Burrows on 28/10/2019.
@@ -8,25 +8,52 @@
 
 import Foundation
 
-public class SNClient: APIClientProtocol {
+public enum NetworkLoaderError: Error, Equatable {
+    case message(_ message: String)
+    case statusCodeFailure(code: Int)
+    
+}
 
-    public init() { }
+public protocol APIClientProtocol {
+    var urlSession: URLSession { get }
+    func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void)
+}
+
+public struct SNClient: APIClientProtocol { }
+
+extension APIClientProtocol {
+    
+    public var urlSession: URLSession {
+        return URLSession.shared
+    }
+    
     public func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void) {
-        let task = URLSession.shared.dataTask(with: request) { data, _, error in
-            let result: Result<T, NetworkLoaderError>
+        let task = urlSession.dataTask(with: request) { data, response, error in
+            var result: Result<T, NetworkLoaderError>
             if let error = error {
-                result = .failure(NetworkLoaderError(message: error.localizedDescription))
-            } else if let data = data {
+                result = .failure(.message(error.localizedDescription))
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                  return completion(.failure(.message("Request Failed")))
+              }
+            
+            // check for http status error code first
+             guard (200 ... 299).contains(httpResponse.statusCode) else { // Status code can be changed, range 200~299 is for the py file
+                 return completion(.failure(.statusCodeFailure(code: httpResponse.statusCode)))
+             }
+             
+            if let data = data {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 do {
                     let decoded = try decoder.decode(T.self, from: data)
                     result = .success(decoded)
                 } catch {
-                    result = .failure(NetworkLoaderError(message: error.localizedDescription))
+                    result = .failure(.message(error.localizedDescription))
                 }
             } else {
-                result = .failure(NetworkLoaderError(message: "No Data Error"))
+                result = .failure(.message("No Data Error"))
             }
 
             DispatchQueue.main.async {
@@ -35,6 +62,5 @@ public class SNClient: APIClientProtocol {
         }
 
         task.resume()
-
     }
 }

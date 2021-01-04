@@ -38,8 +38,10 @@ public struct APIRequest: Requestable {
             throw APIRequestError.badURL
         }
 
-        components.queryItems = queryItems
-
+        if queryItems.count > 0 {
+            components.queryItems = queryItems
+        }
+        
         guard let url = components.url else {
             throw APIRequestError.badURL
         }
