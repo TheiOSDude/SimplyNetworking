@@ -2,6 +2,8 @@
 
 ## A lightweight, reusable, Swift Networking library.
 
+### SPM Compatible.
+
 ### Usage:
 
 ``` swift

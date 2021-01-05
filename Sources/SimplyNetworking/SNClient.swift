@@ -38,8 +38,7 @@ extension APIClientProtocol {
                   return completion(.failure(.message("Request Failed")))
               }
             
-            // check for http status error code first
-             guard (200 ... 299).contains(httpResponse.statusCode) else { // Status code can be changed, range 200~299 is for the py file
+             guard (200 ... 299).contains(httpResponse.statusCode) else { 
                  return completion(.failure(.statusCodeFailure(code: httpResponse.statusCode)))
              }
              
