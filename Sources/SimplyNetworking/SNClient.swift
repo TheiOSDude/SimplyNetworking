@@ -19,7 +19,12 @@ public protocol APIClientProtocol {
     func request<T: Codable>(_ request: URLRequest, completion: @escaping (Result<T, NetworkLoaderError>) -> Void)
 }
 
-public struct SNClient: APIClientProtocol { }
+public struct SNClient: APIClientProtocol {
+    
+    public init() {
+        
+    }
+}
 
 extension APIClientProtocol {
     
